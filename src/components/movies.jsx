@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import _ from 'lodash';
 
 import { getGenres } from '../services/fakeGenreService';
@@ -82,6 +83,13 @@ class Movies extends Component {
             selectedItem={this.state.selectedGenre} />
         </div>
         <div className='col'>
+          <Link
+            to='/movies/add'
+            className='btn btn-primary'
+            style={{ marginBottom: 20 }}
+          >
+            Add Movie
+          </Link>
           <p>Showing {totalCount} movies.</p>
           <MoviesTable
             movies={movies}
