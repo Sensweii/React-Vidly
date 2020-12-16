@@ -21,8 +21,6 @@ class Form extends Component {
 
   validateProperty = ({ name, value }) => {
     const obj = { [name]: value };
-    console.log(obj);
-    console.log(this.schema);
     const schema = { [name]: this.schema[name] };
     const { error } = Joi.validate(obj, schema);
     return error ? error.details[0].message : null;
