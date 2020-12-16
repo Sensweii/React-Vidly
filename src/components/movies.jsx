@@ -8,6 +8,7 @@ import { paginate } from '../utils/paginate';
 import ListGroup from './common/listGroup';
 import MoviesTable from './moviesTable';
 import Pagination from './common/pagination';
+import SearchBox from './common/searchBox';
 
 class Movies extends Component {
   state = {
@@ -15,6 +16,8 @@ class Movies extends Component {
     genres: [],
     currentPage: 1,
     pageSize: 4,
+    searchQuery: '',
+    selectedGenre: null,
     sortColumn: { path: 'title', order: 'asc' }
   };
 
@@ -41,7 +44,11 @@ class Movies extends Component {
   }
 
   handleGenreSelect = genre => {
-    this.setState({ selectedGenre: genre, currentPage: 1 });
+    this.setState({ selectedGenre: genre, searchQuery: '', currentPage: 1 });
+  }
+
+  handleSearch = query => {
+    this.setState({ searchQuery: query, selectedGenre: null, currentPage: 1 });
   }
 
   handleSort = sortColumn => {
@@ -54,11 +61,17 @@ class Movies extends Component {
       currentPage,
       sortColumn,
       selectedGenre,
+      searchQuery,
       movies: allMovies
     } = this.state;
-    const filteredMovies = selectedGenre && selectedGenre._id
-      ? allMovies.filter(m => m.genre._id === selectedGenre._id)
-      : allMovies;
+    let filteredMovies = allMovies;
+    if (searchQuery)
+      filteredMovies = allMovies.filter(m =>
+        m.title.toLowerCase().includes(searchQuery.toLowerCase()));
+    else if (selectedGenre && selectedGenre._id)
+      filteredMovies = allMovies.filter(m =>
+        m.genre._id === selectedGenre._id);
+
     const sortedMovies = _.orderBy(
       filteredMovies,
       [sortColumn.path],
@@ -69,7 +82,7 @@ class Movies extends Component {
 
   render() {
     const { length: count } = this.state.movies;
-    const { pageSize, currentPage, sortColumn } = this.state;
+    const { pageSize, currentPage, searchQuery, sortColumn } = this.state;
 
     if (count === 0) return <p>No movies in database.</p>
     const { totalCount, data: movies } = this.getPagedData();
@@ -91,6 +104,7 @@ class Movies extends Component {
             Add Movie
           </Link>
           <p>Showing {totalCount} movies.</p>
+          <SearchBox value={searchQuery} onChange={this.handleSearch} />
           <MoviesTable
             movies={movies}
             sortColumn={sortColumn}
