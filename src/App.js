@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Route, Redirect, Switch } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 
-import auth from './services/authService';
+import authDetails from './services/authDetailsService';
 
 import Customers from './components/customers';
 import Logout from './components/logout';
@@ -22,7 +22,7 @@ class App extends Component {
   state = {};
 
   componentDidMount() {
-    const user = auth.getCurrentUser();
+    const user = authDetails.getCurrentUser();
     this.setState({ user });
   }
 
