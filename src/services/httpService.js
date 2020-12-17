@@ -2,9 +2,6 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 
 import logger from './logService';
-import authDetails from './authDetailsService';
-
-axios.defaults.headers.common['x-auth-token'] = authDetails.getJWT();
 
 axios.interceptors.response.use(null, error => {
   const expectedError =
@@ -20,9 +17,14 @@ axios.interceptors.response.use(null, error => {
   return Promise.reject(error);
 });
 
+function setJWT(jwt) {
+  axios.defaults.headers.common['x-auth-token'] = jwt;
+}
+
 export default {
   get: axios.get,
   post: axios.post,
   put: axios.put,
-  delete: axios.delete
+  delete: axios.delete,
+  setJWT
 };
